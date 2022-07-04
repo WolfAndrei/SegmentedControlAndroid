@@ -1,0 +1,4 @@
+<resources>
+  <string name="product_id_placeholder">Product id: %d</string>
+  <string name="app_name">NewApp</string>
+</resources>
