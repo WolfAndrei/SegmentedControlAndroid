@@ -143,7 +143,7 @@ class Product {
     pr.mapNotNull {
       val value = it.params?.map { it.name to it.value } ?: return@mapNotNull null
       it.productId to value.sortedBy { it.first }
-    }
+    }.filter { it.second.size == allVariants.size }
   }
 
   private fun updateCurrentState(): List<List<State>> {
@@ -177,26 +177,24 @@ class Product {
     return list
   }
 
-  fun selectNewProduct(row: Int?, item: Int?):
-      List<List<State>> {
+  fun selectNewProduct(row: Int?, item: Int?): List<List<State>> {
     if (row != null && item != null) {
       selectedIndexes[row] = item
     }
     return updateCurrentState()
   }
 
-  val selectedProductId: Long
+  val selectedProductId: Long?
     get() {
-      allProducts
       val listOfSelectedProps = mutableListOf<Pair<String, String>>()
 
-      for (i in 0.until(allVariants.size)) {
+      for (i in allVariants.indices) {
         val currentSelectedIndex = selectedIndexes[i]
         val propName = allVariants[i].first
         val prop = allVariants[i].second[currentSelectedIndex]
         listOfSelectedProps.add(Pair(propName, prop))
       }
-      return allProducts.first { it.second == listOfSelectedProps }.first
+      return allProducts.firstOrNull { it.second == listOfSelectedProps }?.first
     }
 
   private val selectedIndexes = MutableList(allVariants.size) { 0 }
